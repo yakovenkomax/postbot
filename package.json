@@ -1,0 +1,49 @@
+{
+  "name": "PostBot",
+  "version": "0.1.0",
+  "description": "A publish/subscribe bot for Telegram.",
+  "main": "index.js",
+  "repository": "https://github.com/yakovenkomax/postbot",
+  "author": "Maxim Yakovenko",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "rules": {
+      "indent": [
+        "error",
+        2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.51.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.17.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
