@@ -1,14 +1,14 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { ADMIN_USERNAME_LIST, TELEGRAM_BOT_TOKEN } from './config.js';
 import { QUERY, STATE, TEXT } from './constants.js';
-import { readSubscriberData, subscribeUser, sendPreview, sendLetter, sendDeliveryResult } from './helpers.js';
+import { readData, addSubscriber, sendPreview, sendLetter, sendDeliveryResult } from './helpers.js';
 
 let letter = '';
 let letterEntities = [];
 let recipientList = [];
 let state = STATE.initial;
 
-const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+const ADMIN_USERNAMES = process.env.ADMIN_USERNAMES.split(',');
 
 // Keyboard buttons reactions
 bot.on('callback_query', async (query) => {
@@ -20,7 +20,7 @@ bot.on('callback_query', async (query) => {
 
   // "View Subscribers" button reaction
   if (query.data === QUERY.viewSubscribersList) {
-    const subscribers = readSubscriberData();
+    const { subscribers } = readData();
 
     const subscribersText = Object.keys(subscribers).reduce((acc, username) => {
       const subscriber = subscribers[username];
@@ -72,20 +72,23 @@ bot.on('callback_query', async (query) => {
 bot.on('message', async message => {
   // Initial command "/start" reaction
   if (message.text === '/start') {
-    subscribeUser({
+    addSubscriber({
       username: message.chat.username,
       chatId: message.chat.id,
       firstName: message.chat.first_name,
       lastName: message.chat.last_name,
     });
 
-    if (ADMIN_USERNAME_LIST.includes(message.chat.username)) {
-      await bot.sendMessage(message.chat.id, TEXT.welcomeAdmin);
+    const { publishers } = readData();
+    const isPublisherOrAdmin = ADMIN_USERNAMES.includes(message.chat.username) || Object.keys(publishers).includes(message.chat.username);
+
+    if (isPublisherOrAdmin) {
+      await bot.sendMessage(message.chat.id, TEXT.welcomePublisher);
       sendPreview({ bot, chatId: message.chat.id, letter, letterEntities, recipientList });
       return;
     }
 
-    bot.sendMessage(message.chat.id, TEXT.welcome);
+    bot.sendMessage(message.chat.id, TEXT.welcomeSubscriber);
     return;
   }
 
@@ -108,6 +111,10 @@ bot.on('message', async message => {
 
     state = STATE.initial;
     return;
+  }
+
+  if (message.text === '/getme') {
+    console.log('### bot: ', await bot.getMe());
   }
 });
 

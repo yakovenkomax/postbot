@@ -1,8 +1,8 @@
 export const DATA_FILE_PATH = './data.json';
 
 export const TEXT = {
-  welcome: 'Welcome!\n\nThis bot allows you to receive personalized mailings from the bot administrator. Just wait for a message!',
-  welcomeAdmin: 'Welcome!\n\nThis bot allows you to send messages to your subscribers. Share your bot link to get subscribers. Use the following keyboard to edit and send messages.',
+  welcomeSubscriber: 'Welcome!\n\nThis bot allows you to receive messages from the bot publishers. Just wait for a message!',
+  welcomePublisher: 'Welcome!\n\nThis bot allows you to send messages to your subscribers. Share your bot link to get subscribers. Use the following keyboard to edit and send messages.',
 
   buttonViewSubscribersList: '👁 View Subscribers',
   buttonEditLetter: '✏️ Edit Message',

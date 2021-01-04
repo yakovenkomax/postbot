@@ -2,17 +2,18 @@ import fs from 'fs';
 
 import { DATA_FILE_PATH, TEXT, KEYBOARD_MESSAGE_OPTIONS } from './constants.js';
 
-export const readSubscriberData = () => {
+export const readData = () => {
   const data = fs.readFileSync(DATA_FILE_PATH);
-  const { subscribers } = JSON.parse(data);
 
-  return subscribers;
+  return JSON.parse(data);
 };
 
-export const subscribeUser = ({ username, chatId, firstName, lastName }) => {
-  const subscribers = readSubscriberData();
+export const addSubscriber = ({ username, chatId, firstName, lastName }) => {
+  const data = readData();
+  const { subscribers } = data;
 
   const newData = JSON.stringify({
+    ...data,
     subscribers: {
       ...subscribers,
       [username]: {
@@ -94,7 +95,7 @@ export const sendPreview = async ({ bot, chatId, letter, letterEntities, recipie
 };
 
 export const sendLetter = async ({ bot, letter, letterEntities, recipientList }) => {
-  const subscribers = readSubscriberData();
+  const { subscribers } = readData();
   const deliveryResultData = {
     successUserList: [],
     excludedUserList: [],
